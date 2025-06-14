@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Date Adventure 💕</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff0f5;
+      color: #333;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #b30059;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      width: 200px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #ff6699;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #cc3366;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .result {
+      font-size: 1.3em;
+      margin-top: 30px;
+      color: #006600;
+    }
+
+    .intro {
+      font-size: 2em;
+      margin-top: 100px;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🎉 Confetti Canvas -->
+  <canvas id="confetti-canvas" class="hidden"></canvas>
+
+  <!-- 🎵 Audio -->
+  <audio id="bg-music" src="https://cdn.pixabay.com/download/audio/2022/03/14/audio_4c65e6f3ed.mp3?filename=happy-birthday-113920.mp3" loop></audio>
+
+  <!-- 🎈 Intro -->
+  <div id="intro">
+    <div class="intro">Happy Birthday, My Love! 💖</div>
+    <button onclick="startAdventure()">Start Adventure 🎉</button>
+  </div>
+
+  <!-- 🍽️ Food Choices -->
+  <div id="step1" class="hidden">
+    <h1>Step 1: Choose Food 🍽️</h1>
+    <div class="options">
+      <div class="card"><h3>Marmaletta 🍕</h3><button onclick="chooseFood('Marmaletta')">Choose</button></div>
+      <div class="card"><h3>SushiCounter 🍣</h3><button onclick="chooseFood('SushiCounter')">Choose</button></div>
+      <div class="card"><h3>Five Guys 🍔</h3><button onclick="chooseFood('Five Guys')">Choose</button></div>
+      <div class="card"><h3>Haru 🇰🇷</h3><button onclick="chooseFood('Haru')">Choose</button></div>
+    </div>
+  </div>
+
+  <!-- 🏡 In or Out -->
+  <div id="step2" class="hidden">
+    <h1>Step 2: Stay In or Go Out? 🏠🌆</h1>
+    <div class="options">
+      <div class="card"><h3>Stay In</h3><button onclick="chooseLocation('Stay In')">Choose</button></div>
+      <div class="card"><h3>Go Out</h3><button onclick="chooseLocation('Go Out')">Choose</button></div>
+    </div>
+  </div>
+
+  <!-- 💑 Activity -->
+  <div id="step3" class="hidden">
+    <h1>Step 3: Choose a Date Activity 💑</h1>
+    <div class="options">
+      <div class="card"><h3>2-op Games 🎮</h3><button onclick="chooseActivity('2-op games')">Choose</button></div>
+      <div class="card"><h3>Movie Night 🎬</h3><button onclick="chooseActivity('movie night')">Choose</button></div>
+      <div class="card"><h3>Squash 🏓</h3><button onclick="chooseActivity('playing squash')">Choose</button></div>
+      <div class="card"><h3>Mall 🛍️</h3><button onclick="chooseActivity('hanging out at the mall')">Choose</button></div>
+    </div>
+  </div>
+
+  <!-- ✅ Final Message -->
+  <div id="result" class="hidden result"></div>
+  <button id="restart" class="hidden" onclick="location.reload()">Start Over 🔁</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    let selectedFood = '';
+    let selectedLocation = '';
+    let selectedActivity = '';
+
+    function startAdventure() {
+      document.getElementById('intro').classList.add('hidden');
+      document.getElementById('step1').classList.remove('hidden');
+      document.getElementById('bg-music').play();
+    }
+
+    function chooseFood(food) {
+      selectedFood = food;
+      document.getElementById('step1').classList.add('hidden');
+      if (food === 'Marmaletta') {
+        document.getElementById('step3').classList.remove('hidden');
+      } else {
+        document.getElementById('step2').classList.remove('hidden');
+      }
+    }
+
+    function chooseLocation(location) {
+      selectedLocation = location;
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step3').classList.remove('hidden');
+    }
+
+    function chooseActivity(activity) {
+      selectedActivity = activity;
+      document.getElementById('step3').classList.add('hidden');
+
+      let msg = `Yay! You chose ${selectedFood}`;
+      if (selectedFood !== 'Marmaletta') {
+        msg += ` + ${selectedLocation}`;
+      }
+      msg += ` + ${selectedActivity}! ❤️`;
+
+      document.getElementById('result').textContent = msg;
+      document.getElementById('result').classList.remove('hidden');
+      document.getElementById('restart').classList.remove('hidden');
+
+      // Show confetti
+      launchConfetti();
+    }
+
+    function launchConfetti() {
+      const duration = 3 * 1000;
+      const end = Date.now() + duration;
+      (function frame() {
+        confetti({
+          particleCount: 4,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 4,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+  </script>
+</body>
+</html>
